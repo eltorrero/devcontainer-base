@@ -11,7 +11,6 @@ RUN apt-get update \
        git \
        tar \
        sudo \
-       tmux \
     && rm -rf /var/lib/apt/lists/*
 
 # ---- Non-root user ----
@@ -25,6 +24,13 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && chown ${USERNAME}:${USER_GID} /workspace \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
+
+# ---- Install Zellij from latest GitHub release ----
+RUN curl -L "https://github.com/zellij-org/zellij/releases/download/latest/zellij-x86_64-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz \
+    && mkdir /opt/zellij \
+    && tar -C /opt/zellij -xzf /tmp/zellij.tar.gz \
+    && ln -sfn /opt/zellij/zellij /usr/local/bin/zellij \
+    && rm /tmp/zellij.tar.gz
 
 # ---- Install Neovim from latest GitHub release ----
 RUN curl -L "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" -o /tmp/nvim.tar.gz \
