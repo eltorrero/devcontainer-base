@@ -32,8 +32,8 @@ WORKDIR /workspace
 ENV XDG_CONFIG_HOME=/home/${USERNAME}/.config
 
 # ---- Install Neovim from latest GitHub release ----
-RUN curl -L "https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz" -o /tmp/nvim.tar.gz \
+RUN curl -L "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" -o /tmp/nvim.tar.gz \
     && tar -C /opt -xzf /tmp/nvim.tar.gz \
-    && ln -sfn /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim \
+    && ln -sfn /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim \
     && rm /tmp/nvim.tar.gz
 
