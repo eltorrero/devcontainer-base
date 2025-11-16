@@ -26,7 +26,7 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
 # ---- Install Zellij from latest GitHub release ----
-RUN curl -L "https://github.com/zellij-org/zellij/releases/download/latest/zellij-x86_64-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz \
+RUN curl -L "https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz \
     && mkdir /opt/zellij \
     && tar -C /opt/zellij -xzf /tmp/zellij.tar.gz \
     && ln -sfn /opt/zellij/zellij /usr/local/bin/zellij \
