@@ -50,7 +50,13 @@ gh_install_binary() {
     else
         tar -C "$opt_path" -xzf "$tmp_path" --strip-components=1
     fi
-    ln -sf "${opt_path}/${binary_name}" "/usr/local/bin/${binary_name}"
+    # dirt workaround to compensate for bin subfolder
+    if [[ "$binary_name" == "bin/nvim" ]]; then
+        ln -sf "${opt_path}/${binary_name}" "/usr/local/${binary_name}"
+    else
+        ln -sf "${opt_path}/${binary_name}" "/usr/local/bin/${binary_name}"
+    fi
+    
 }
 
 github_token="$(cat /run/secrets/github_token)"
