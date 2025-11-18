@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # "fail fast" / strict + debug combo
 # -e : Exit immediately if any command in the script returns a non-zero status
@@ -15,7 +15,7 @@ gh_install_binary() {
     
     # TODO: verify checksum
     
-    local declare -A lookup_binary=(
+    local -A lookup_binary=(
         [ripgrep]="rg"
         [eza]="eza"
         [zellij]="zellij"
@@ -66,4 +66,3 @@ gh_install_binary "neovim" "neovim" "nvim-linux-x86_64.tar.gz"
 # TODO: Install fzf, fd, just, rclone, qpdf, jq, fish, atuin, tree-sitter
 # TODO: Configure fish completions
 # TODO: Create alias for eza to become ll
-
