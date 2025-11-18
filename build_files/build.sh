@@ -46,7 +46,7 @@ gh_install_binary() {
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl git tar sudo
+    ca-certificates curl git tar sudo jq
 
 USER_UID=1000
 USER_GID=$USER_UID
