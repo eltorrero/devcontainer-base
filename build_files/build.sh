@@ -23,7 +23,7 @@ gh_install_binary() {
     
     local binary_name=${lookup_binary[$repo]}
     local tmp_path="/tmp/${repo}.tar.gz"
-    local opt_path="/opt/${shortname}"
+    local opt_path="/opt/${repo}"
     
     local api_url="https://api.github.com/repos/${owner}/${repo}/releases/latest"
     local asset_url=$(
