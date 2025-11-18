@@ -16,9 +16,11 @@ gh_install_binary() {
     # TODO: verify checksum
     
     local -A lookup_binary=(
-        [ripgrep]="rg"
-        [eza]="eza"
         [zellij]="zellij"
+        [eza]="eza"
+        [sharkdp]="bat"
+        [ripgrep]="rg"
+        [neovim]="neovim"
     )
     
     local binary_name=${lookup_binary[$repo]}
