@@ -1,45 +1,31 @@
-# https://hub.docker.com/_/debian
+# Inspired by https://github.com/ublue-os/image-template
+
+# A pure file stage for build scripts which won't be present in the final image
+FROM scratch AS ctx
+COPY build_files /
+
+# Real build stage - https://hub.docker.com/_/debian
 FROM debian:stable-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# ---- Base packages ----
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       ca-certificates \
-       curl \
-       git \
-       tar \
-       sudo \
-    && rm -rf /var/lib/apt/lists/*
-
-# ---- Non-root user ----
+# Non-root user
 ARG USERNAME=moo
-ARG USER_UID=1000
-ARG USER_GID=${USER_UID}
+# env variables will be available in the RUN and therefore in the build script
+ENV USERNAME=${USERNAME}
 
-RUN groupadd --gid ${USER_GID} ${USERNAME} \
-    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
-    && mkdir -p /workspace \
-    && chown ${USERNAME}:${USER_GID} /workspace \
-    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USERNAME} \
-    && chmod 0440 /etc/sudoers.d/${USERNAME}
+# Mount the build scripts, caches, and temp space only for this build step,
+# so it will not bloat the final image
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/lib/apt/lists \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /ctx/build.sh
 
-# ---- Install Zellij from latest GitHub release ----
-RUN curl -L "https://github.com/zellij-org/zellij/releases/latest/download/zellij-no-web-x86_64-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz \
-    && mkdir /opt/zellij \
-    && tar -C /opt/zellij -xzf /tmp/zellij.tar.gz \
-    && ln -sfn /opt/zellij/zellij /usr/local/bin/zellij \
-    && rm /tmp/zellij.tar.gz
-
-# ---- Install Neovim from latest GitHub release ----
-RUN curl -L "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" -o /tmp/nvim.tar.gz \
-    && tar -C /opt -xzf /tmp/nvim.tar.gz \
-    && ln -sfn /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim \
-    && rm /tmp/nvim.tar.gz
-
+# Set user and working directory for the following instructions in case
+# this image is used as a base to build upon
 USER ${USERNAME}
 WORKDIR /workspace
 
+# Set user config path
 ENV XDG_CONFIG_HOME=/home/${USERNAME}/.config
 
