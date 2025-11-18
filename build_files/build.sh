@@ -18,7 +18,7 @@ gh_install_binary() {
     local -A lookup_binary=(
         [zellij]="zellij"
         [eza]="eza"
-        [sharkdp]="bat"
+        [bat]="bat"
         [ripgrep]="rg"
         [neovim]="neovim"
     )
