@@ -19,6 +19,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/lib/apt/lists \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
+    --mount=type=secret,id=github_token \
     /ctx/build.sh
 
 # Set user and working directory for the following instructions in case

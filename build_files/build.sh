@@ -29,7 +29,9 @@ gh_install_binary() {
     
     local api_url="https://api.github.com/repos/${owner}/${repo}/releases/latest"
     local asset_url=$(
-        curl -fsSL "$api_url" | jq -r --arg pat "$pattern" \
+        curl -fsSL -H "Authorization: Bearer ${github_token}" \
+        -H "Accept: application/vnd.github+json" "$api_url" \
+        | jq -r --arg pat "$pattern" \
         '.assets[] | select(.name | test($pat)) | .browser_download_url' \
         | head -n1
     )
@@ -45,6 +47,8 @@ gh_install_binary() {
     tar -C "$opt_path" -xzf "$tmp_path" --strip-components=1
     ln -sf "${opt_path}/${binary_name}" "/usr/local/bin/${binary_name}"
 }
+
+github_token="$(cat /run/secrets/github_token)"
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get install -y --no-install-recommends \
