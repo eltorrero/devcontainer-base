@@ -20,7 +20,7 @@ gh_install_binary() {
         [eza]="eza"
         [bat]="bat"
         [ripgrep]="rg"
-        [neovim]="neovim"
+        [neovim]="bin/nvim"
     )
     
     local binary_name=${lookup_binary[$repo]}
@@ -44,7 +44,12 @@ gh_install_binary() {
     curl -Lso "$tmp_path" "$asset_url"
 
     mkdir "$opt_path"
-    tar -C "$opt_path" -xzf "$tmp_path" --strip-components=1
+    # avoid stripping too much ending up with empty folder
+    if [[ "$repo" == "zellij" ]]; then
+        tar -C "$opt_path" -xzf "$tmp_path"
+    else
+        tar -C "$opt_path" -xzf "$tmp_path" --strip-components=1
+    fi
     ln -sf "${opt_path}/${binary_name}" "/usr/local/bin/${binary_name}"
 }
 
