@@ -9,24 +9,20 @@ set -euxo pipefail
 
 # Install binaries from latest GitHub release
 gh_install_binary() {
-    local owner="$1"
-    local repo="$2"
-    local pattern="$3"
+    local repo="$1"
+    
+    local owner=$(jq -r ".${repo}.owner" /ctx/config.json)
+    local arch=$(jq -r ".${repo}.arch[0]" /ctx/config.json)
+    local strip_components=$(jq -r ".${repo}.strip_components" /ctx/config.json)
+    local pattern=$(jq -r ".${repo}.pattern" /ctx/config.json)
+    local pattern=${pattern//<<ARCH>>/$arch}
+    local binary_name=$(jq -r ".${repo}.binary_name" /ctx/config.json)
+    local binary_path=$(jq -r ".${repo}.binary_path" /ctx/config.json)
     
     # TODO: verify checksum
     
-    local -A lookup_binary=(
-        [zellij]="zellij"
-        [eza]="eza"
-        [bat]="bat"
-        [ripgrep]="rg"
-        [neovim]="bin/nvim"
-    )
-    
-    local binary_name=${lookup_binary[$repo]}
     local tmp_path="/tmp/${repo}.tar.gz"
     local opt_path="/opt/${repo}"
-    
     local api_url="https://api.github.com/repos/${owner}/${repo}/releases/latest"
     local asset_url=$(
         curl -fsSL -H "Authorization: Bearer ${github_token}" \
@@ -45,17 +41,13 @@ gh_install_binary() {
 
     mkdir "$opt_path"
     # avoid stripping too much ending up with empty folder
-    if [[ "$repo" == "zellij" ]]; then
-        tar -C "$opt_path" -xzf "$tmp_path"
-    else
+    if [[ "$strip_components" == "true" ]]; then
         tar -C "$opt_path" -xzf "$tmp_path" --strip-components=1
-    fi
-    # dirt workaround to compensate for bin subfolder
-    if [[ "$binary_name" == "bin/nvim" ]]; then
-        ln -sf "${opt_path}/${binary_name}" "/usr/local/${binary_name}"
     else
-        ln -sf "${opt_path}/${binary_name}" "/usr/local/bin/${binary_name}"
+        tar -C "$opt_path" -xzf "$tmp_path"
     fi
+
+    ln -sf "${opt_path}/${binary_path}${binary_name}" "/usr/local/bin/${binary_name}"
     
 }
 
@@ -74,7 +66,7 @@ chown ${USERNAME}:${USER_GID} /workspace
 echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME
 chmod 0440 /etc/sudoers.d/$USERNAME
 
-gh_install_binary "zellij-org" "zellij" "zellij-no-web-x86_64-unknown-linux-musl.tar.gz"
+gh_install_binary "zellij"
 gh_install_binary "eza-community" "eza" "eza_x86_64-unknown-linux-gnu.tar.gz"
 gh_install_binary "sharkdp" "bat" "^bat-.+-x86_64-unknown-linux-gnu.tar.gz$"
 gh_install_binary "BurntSushi" "ripgrep" "^ripgrep-.+-x86_64-unknown-linux-musl.tar.gz$"

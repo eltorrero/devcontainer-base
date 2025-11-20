@@ -1,0 +1,42 @@
+{
+    "zellij": {
+        "owner": "zellij-org",
+        "arch": ["x86_64"],
+        "pattern": "zellij-no-<<ARCH>>-unknown-linux-musl.tar.gz",
+        "binary_name": "zellij",
+        "binary_path": "",
+        "strip_components": "false"
+    },
+    "eza": {
+        "owner": "eza-community",
+        "arch": ["x86_64"],
+        "pattern": "eza_{{ARCH}}-unknown-linux-gnu.tar.gz",
+        "binary_name": "eza",
+        "binary_path": "",
+        "strip_components": "true"
+    },
+    "bat": {
+        "owner": "sharkdp",
+        "arch": ["x86_64"],
+        "pattern": "^bat-.+-{{ARCH}}-unknown-linux-gnu.tar.gz$",
+        "binary_name": "bat",
+        "binary_path": "",
+        "strip_components": "true"
+    },
+    "ripgrep": {
+        "owner": "BurntSushi",
+        "arch": ["x86_64"],
+        "pattern": "^ripgrep-.+-{{ARCH}}-unknown-linux-musl.tar.gz$",
+        "binary_name": "rg",
+        "binary_path": "",
+        "strip_components": "true"
+    },
+    "neovim": {
+        "owner": "neovim",
+        "arch": ["x86_64"],
+        "pattern": "nvim-linux-{{ARCH}}.tar.gz",
+        "binary_name": "nvim",
+        "binary_path": "bin/",
+        "strip_components": "true"
+    }
+}
