@@ -38,5 +38,13 @@
         "binary_name": "nvim",
         "binary_path": "bin/",
         "strip_components": "true"
+    },
+    "fish": {
+        "arch": ["amd64"],
+        "url": "https://download.opensuse.org/repositories/shells:/fish:/release:/4/<<OS>>/<<ARCH>>/fish_4.2.1-1_<<ARCH>>.deb",
+        "lookup_codename": {
+            "trixie": "Debian_13"
+        }
     }
 }
+

@@ -7,6 +7,20 @@
 # -o pipefail: Make a pipeline fail if any command in it fails, not just the last one
 set -euxo pipefail
 
+install_fish() {
+    local debian_codename="$1"
+    
+    local os=$(jq -r ".fish.lookup_codename[\"${debian_codename}\"]" /ctx/config.json)
+    local arch=$(jq -r ".fish.arch[0]" /ctx/config.json)
+    local url=$(jq -r ".fish.url" /ctx/config.json)
+    local url=${url//<<ARCH>>/$arch}
+    local url=${url//<<OS>>/$os}
+    local tmp_path="/tmp/fish_${arch}.deb"
+    
+    curl -Lso "$tmp_path" "$url"
+    dpkg -i "$tmp_path"
+}
+
 # Install binaries from latest GitHub release
 gh_install_binary() {
     local repo="$1"
@@ -57,10 +71,12 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl git tar sudo jq
 
+install_fish $DEBIAN_CODENAME
+
 USER_UID=1000
 USER_GID=$USER_UID
 groupadd --gid $USER_GID $USERNAME
-useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+useradd --uid $USER_UID --gid $USER_GID --shell $(which fish) -m $USERNAME
 mkdir -p /workspace
 chown ${USERNAME}:${USER_GID} /workspace
 echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME
@@ -72,6 +88,7 @@ gh_install_binary "bat"
 gh_install_binary "ripgrep"
 gh_install_binary "neovim"
 
-# TODO: Install fzf, fd, just, rclone, qpdf, jq, fish, atuin, tree-sitter
+# TODO: Install fzf, fd, just, rclone, qpdf, fish, atuin, tree-sitter
 # TODO: Configure fish completions
 # TODO: Create alias for eza to become ll
+

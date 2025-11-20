@@ -4,13 +4,20 @@
 FROM scratch AS ctx
 COPY build_files /
 
+ARG DEBIAN_CODENAME=trixie
+
 # Real build stage - https://hub.docker.com/_/debian
-FROM debian:stable-slim
+FROM debian:${DEBIAN_CODENAME}-slim
+
+# Re-declare DEBIAN_CODENAME inside this stage to use it
+ARG DEBIAN_CODENAME
 
 # Non-root user
 ARG USERNAME=moo
+
 # env variables will be available in the RUN and therefore in the build script
 ENV USERNAME=${USERNAME}
+ENV DEBIAN_CODENAME=${DEBIAN_CODENAME}
 
 # Mount the build scripts, caches, and temp space only for this build step,
 # so it will not bloat the final image
