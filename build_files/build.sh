@@ -67,10 +67,10 @@ echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME
 chmod 0440 /etc/sudoers.d/$USERNAME
 
 gh_install_binary "zellij"
-gh_install_binary "eza-community" "eza" "eza_x86_64-unknown-linux-gnu.tar.gz"
-gh_install_binary "sharkdp" "bat" "^bat-.+-x86_64-unknown-linux-gnu.tar.gz$"
-gh_install_binary "BurntSushi" "ripgrep" "^ripgrep-.+-x86_64-unknown-linux-musl.tar.gz$"
-gh_install_binary "neovim" "neovim" "nvim-linux-x86_64.tar.gz"
+gh_install_binary "eza"
+gh_install_binary "bat"
+gh_install_binary "ripgrep"
+gh_install_binary "neovim"
 
 # TODO: Install fzf, fd, just, rclone, qpdf, jq, fish, atuin, tree-sitter
 # TODO: Configure fish completions
