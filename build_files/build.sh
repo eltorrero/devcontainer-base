@@ -18,7 +18,7 @@ install_fish() {
     local tmp_path="/tmp/fish_${arch}.deb"
     
     curl -Lso "$tmp_path" "$url"
-    dpkg -i "$tmp_path"
+    apt-get install -y --no-install-recommends "$tmp_path"
 }
 
 # Install binaries from latest GitHub release
