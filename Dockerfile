@@ -1,10 +1,10 @@
 # Inspired by https://github.com/ublue-os/image-template
 
+ARG DEBIAN_CODENAME=trixie
+
 # A pure file stage for build scripts which won't be present in the final image
 FROM scratch AS ctx
 COPY build_files /
-
-ARG DEBIAN_CODENAME=trixie
 
 # Real build stage - https://hub.docker.com/_/debian
 FROM debian:${DEBIAN_CODENAME}-slim
